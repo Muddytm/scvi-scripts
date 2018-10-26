@@ -14,21 +14,28 @@ with open("Mod.locres.txt", encoding="utf-8") as f:
 # Catalogue all errors found, if any
 errors = []
 
-# Begin iteration through each line
-for i in range(len(base)):
-    # If current locres line is not modded
-    if current[i] == base[i]:
-        # If mod locres line is different than what's in base, update line
-        if mod[i] != base[i]:
-            current[i] = mod[i]
-    # If current locres line IS modded
-    else:
-        # If mod locres line differs from base, catalogue error
-        if mod[i] != base[i] and mod[i] != current[i]:
-            errors.append("Overwrite warning (line {}): \"{}\" was to be "
-                          "replaced by \"{}\".".format(str(i + 1),
-                                                       current[i].strip(),
-                                                       mod[i].strip()))
+try:
+    # Begin iteration through each line
+    for i in range(len(base)):
+        # If current locres line is not modded
+        if current[i] == base[i]:
+            # If mod locres line is different than what's in base, update line
+            if mod[i] != base[i]:
+                current[i] = mod[i]
+        # If current locres line IS modded
+        else:
+            # If mod locres line differs from base, catalogue error
+            if mod[i] != base[i] and mod[i] != current[i]:
+                errors.append("Overwrite warning (line {}): \"{}\" was to be "
+                              "replaced by \"{}\".\n".format(str(i + 1),
+                                                             current[i].strip(),
+                                                             mod[i].strip()))
+except IndexError:
+    errors.append("IndexError: something's off about your locres file lengths."
+                  "Mod.locres.txt: {} lines, Game.locres.txt: {} lines, default "
+                  "Game.locres.txt: {} lines\n".format(str(len(mod)),
+                                                       str(len(current)),
+                                                       str(len(base))))
 
 # If errors exist, don't overwrite. Write errors to errors.log
 if errors:
